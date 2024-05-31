@@ -1,0 +1,41 @@
+# resumed_model: False
+resumed_model: Dec.29_06.33.47/saved_model_model_49.pt.tar
+save_on_rounds: [20, 30, 40, 49]
+
+train_batchsize: 64
+test_batchsize: 1000
+model_type: ResNet18
+lr: 0.0001
+momentum: 0.9
+weight_decay: 0.0005
+
+end_round: 70
+indicator_pattern: 0
+poisoned_pattern: 2
+indicator_swap: 2
+poisoned_swap: 2
+
+indicator_start: 50
+indicator_end: 51
+
+poisoned_start: 51
+poisoned_end: 1000
+
+poison_images_test:
+  - 330
+  - 3934
+  - 12336
+  - 30560
+  - 30696
+
+poison_images:
+  - 568
+  - 33105
+  - 33615
+  - 33907
+  - 36848
+  - 40713
+  - 41706
+
+poisoned_len: 7
+indicator_len: 32

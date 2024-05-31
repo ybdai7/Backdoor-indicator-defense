@@ -1,0 +1,142 @@
+### General Setting
+# resumed_model: Dec.18_21.54.38/saved_model_global_model_400.pt.tar #car with bg eta 0.5 training batchsize 64 alpha 0.2
+resumed_model: Jan.18_02.44.47/saved_model_global_model_1200.pt.tar #CIFAR100
+# resumed_model: False
+
+# save_on_round: [400, 500, 600, 800, 1000, 1200, 1500, 1800]
+save_on_round: [10000]
+
+### watermark setting
+noise_rate: 0.5
+noise_pattern: 1
+noise_label_fixed: True
+ood_data_sample_lens: 800
+ood_data_batch_size: 64
+ood_data_source: CIFAR10
+
+### Benign Client Setting
+# Optimizer Setting
+benign_lr: 0.1 #0.1
+benign_momentum: 0.9
+benign_weight_decay: 0.0005 #0.0005
+
+# Training Process Setting
+benign_is_projection_grad: False
+benign_projection_norm: 3
+benign_retrain_no_times: 2 #7
+
+### Malicious Client Setting
+# Optimizer Setting
+poisoned_lr: 0.025 #0.025 for car with bg 0.035 for green car
+# poisoned_lr: 0.05 #0.1 400, 0.05 800, 0.02 100
+# poisoned_lr: 0.04 #0.1 400, 0.05 800, 0.02 100
+poisoned_momentum: 0.9
+poisoned_weight_decay: 0.0005
+
+# Training Process Setting
+poisoned_is_projection_grad: True
+poisoned_projection_norm: 2
+poisoned_retrain_no_times: 10
+# poisoned_start_round: 410
+# poisoned_start_round: 810
+poisoned_start_round: 1210
+# poisoned_start_round: 10000
+poisoned_end_round: 13000
+poisoned_round_interval: 1
+
+# Poisoned Task Setting
+poison_task_name: "pixel pattern"
+adaptive_attack: False
+
+semantic: True
+pixel_pattern: False
+
+# edge_case: False
+edge_case: True
+
+# semantic: False
+# pixel_pattern: True
+
+# car with stripe bg 14
+poison_images_test:
+  - 330
+  - 3934
+  - 12336
+  - 30560
+  - 30696
+
+poison_images:
+  - 568
+  - 33105
+  - 33615
+  - 33907
+  - 36848
+  - 40713
+  - 41706
+
+poisoned_original_class: 1
+poisoned_pattern_choose: 1
+blend_alpha: 0.3
+poison_label_swap: 2 #8 for green car
+poisoned_len: 7 #4
+
+poison_no_reuse: 10
+poison_train_batch_size: 64
+
+### Server Setting
+# dataset&model setting
+agg_method: FedProx
+defense_method: Rflbat
+rflbat_eps1: 10
+rflbat_eps2: 4
+malicious_train_algo: pgd
+Fedprox_mu: 0 #0.5
+model_type: ResNet18
+dataset: CIFAR100
+class_num: 100
+
+sample_dirichlet: True
+dirichlet_alpha: 0.2
+
+# global dataset setting
+global_dataset_size: 200
+global_no_reuse: 1 #actual dataloader size= * \times global_data_batch_size
+global_data_batch_size: 200
+global_data_train_batch_size: 200
+global_class_num: 20
+
+# server training setting
+start_round: 1
+end_round: 1900
+train_batch_size: 64
+test_batch_size: 1000
+no_of_total_participants: 100
+no_of_participants_per_round: 10
+no_of_adversaries: 1
+
+# norm clipping setting
+norm_clip: True
+norm_bound: 10000
+
+# aggregation setting
+eta: 0.5
+
+malicious_milestones:
+  - 2
+  - 4
+  - 6
+  - 8
+malicious_lr_gamma: 0.3 #0.6 for green car 0.4
+
+benign_milestones:
+  - 2
+  - 4
+  - 6
+  - 8
+benign_lr_gamma: 0.1 #0.2 0.4
+
+malicious_neurotoxin_ratio: 1
+malicious_aggregate_all_layer: 1
+### logging setting
+show_local_test_log: False
+show_train_log: False
