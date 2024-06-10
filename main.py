@@ -19,7 +19,6 @@ from participants.servers.FoolsgoldServer import FoolsgoldServer
 from participants.servers.RflbatServer import RflbatServer
 from participants.servers.MultikrumServer import MultikrumServer
 
-from participants.clients.BenignClient import BenignClient
 from participants.clients.FedProxBenignClient import FedProxBenignClient
 from participants.clients.MaliciousClient import MaliciousClient
 from participants.clients.ChameleonMaliciousClient import ChameleonMaliciousClient
@@ -45,10 +44,6 @@ if __name__ == "__main__":
     with open(f"./{args.params}", "r") as f:
         params_loaded = yaml.safe_load(f)
     params_loaded.update(vars(args))
-
-    # CIFAR10
-    # params_loaded['dataset']="CIFAR10"
-    # params_loaded['class_num']=10
 
     current_time = datetime.datetime.now().strftime("%b.%d_%H.%M.%S")
     dataloader = WMFLDataloader(params=params_loaded)
@@ -92,8 +87,6 @@ if __name__ == "__main__":
                                             blend_pattern=blend_pattern, open_set=dataloader.ood_data,
                                             edge_case_train=dataloader.edge_poison_train, 
                                             edge_case_test=dataloader.edge_poison_test)
-    else:
-        benign_client = BenignClient(params=params_loaded, train_dataset=dataloader.train_dataset)
 
     if server.params["malicious_train_algo"].upper() == "CHAMELEON":
         malicious_client = ChameleonMaliciousClient(params=params_loaded, train_dataset=dataloader.train_dataset, 
@@ -110,8 +103,7 @@ if __name__ == "__main__":
     acc_p_list = list()
     for round in range(server.params["start_round"], server.params["end_round"]):
 
-        server.pre_process(global_data=dataloader.global_data,
-                           test_data=dataloader.test_data,
+        server.pre_process(test_data=dataloader.test_data,
                            round=round
                            )
         if server.params["defense_method"].lower()!="flame":
@@ -123,7 +115,6 @@ if __name__ == "__main__":
                                 train_dataloader=dataloader.train_data,
                                 poison_train_dataloader=dataloader.poison_data,
                                 test_dataloader=dataloader.test_data,
-                                global_dataloader=dataloader.global_data
                                 )
 
             server.aggregation(weight_accumulator=weight_accumulator, aggregated_model_id=aggregated_model_id)
@@ -136,7 +127,6 @@ if __name__ == "__main__":
                                 train_dataloader=dataloader.train_data,
                                 poison_train_dataloader=dataloader.poison_data,
                                 test_dataloader=dataloader.test_data,
-                                global_dataloader=dataloader.global_data
                                 )
 
             server.aggregation(weight_accumulator=weight_accumulator, aggregated_model_id=aggregated_model_id,

@@ -128,26 +128,7 @@ class FedProxBenignClient(AbstractClient):
 
         return True
 
-    def batch_label_distrib(self, targets):
-        distrib_dict=dict()
-        no_class = 100 if self.params["dataset"].upper()=="CIFAR100" else 10
-        for label in range(no_class):
-            distrib_dict[label]=0
-        sum_no = 0
-
-        for label in targets:
-            label = label.item()
-            distrib_dict[label] += 1
-
-            sum_no+=1
-
-        percentage_dict=dict()
-        for key,value in distrib_dict.items():
-            percentage_dict[key] = round(value/sum_no, 2)
-
-        return distrib_dict, percentage_dict, sum_no
-
-    def local_training(self, train_data, target_params_variables, global_data, is_log_train, test_data=None, poisoned_pattern_choose=None, round=None, model_id=None):
+    def local_training(self, train_data, target_params_variables, is_log_train, test_data=None, poisoned_pattern_choose=None, round=None, model_id=None):
         total_loss = 0
         data_iterator = train_data
         self.local_model.train()
@@ -249,7 +230,6 @@ class FedProxBenignClient(AbstractClient):
         data_iterator = copy.deepcopy(test_data)
 
         for batch_id, batch in enumerate(data_iterator):
-            # poisoned_batch, clean_batch= self._watermarking_batch_injection(batch, evaluation=True)
 
             data, targets = batch
             data = data.cuda().detach().requires_grad_(False)
@@ -278,37 +258,6 @@ class FedProxBenignClient(AbstractClient):
 
         model.train()
         return (total_l, watermark_acc, wm_label_acc)
-
-    def _watermarking_batch_injection(self, batch, evaluation=False):
-        r'''
-        poisoned_pattern_choose:
-        evaluation:
-        Open-set data: CIFAR10 for CIFAR100; CIFAR100 for CIFAR10
-        noise_label_pattern: 0 for close-set; 1 for open-set
-        '''
-        poisoned_batch = copy.deepcopy(batch)
-        batch_length = len(batch[0])
-        poisoned_len = int(batch_length*self.params["noise_rate"]) if not evaluation else batch_length
-
-        if self.params['noise_pattern']==0:
-            logger.info(f"open_set is None")
-            for pos in range(poisoned_len):
-                rand=random.randint(0,self.params["class_num"]-1)
-                while rand==poisoned_batch[1][pos]:rand=random.randint(0,self.params["class_num"]-1)
-                poisoned_batch[1][pos]=random.randint(0,self.params["class_num"]-1)
-                
-        elif self.params['noise_pattern']==1:
-            index=random.sample(range(len(self.open_set)),poisoned_len)
-            for pos in range(poisoned_len):
-                poisoned_batch[0][pos]=self.open_set[index[pos]][0]
-                if self.params["noise_label_fixed"]:
-                    # poisoned_batch[1][pos]=self.open_set[index[pos]][1]//10
-                    poisoned_batch[1][pos]=self.open_set_label[index[pos]]
-                else:
-                    poisoned_batch[1][pos]=random.randint(0,self.params["class_num"]-1)
-
-        return True
-
 
     def _local_test_sub(self, test_data, model=None, test_poisoned=False, poisoned_pattern_choose=None):
         

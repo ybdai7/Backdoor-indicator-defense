@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import transforms
 from participants.servers.AbstractServer import AbstractServer
-from participants.clients.TDFedMaliciousClient import TDFedMaliciousCoordinator
 
 import numpy as np
 import random

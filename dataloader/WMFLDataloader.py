@@ -49,8 +49,7 @@ class WMFLDataloader(AbstractDataloader):
                                                   transform=transform_train)
             self.test_dataset = datasets.CIFAR10("./data", train=False, download=True,
                                                  transform=transform_test)
-            # self.ood_dataset = torch.utils.data.DataLoader(datasets.CIFAR100("./data", train=True, download=True, 
-            #                                       transform=transform_train))
+
             if self.params["ood_data_source"] == "CIFAR100":
                 self.ood_dataset = datasets.CIFAR100("./data", train=True, download=True, 
                                                   transform=transform_ood)
@@ -75,31 +74,7 @@ class WMFLDataloader(AbstractDataloader):
             self.test_dataset = datasets.EMNIST("./data", train=False, split="mnist", transform=transform_emnist)
             self.ood_dataset = datasets.CIFAR10("./data", train=True, download=True, 
                                                   transform=transform_ood)
-            # self.ood_dataset=None
-
         
-        return True
-
-    def _sample_global_data_indice(self):
-        class_num = self.params["global_class_num"]
-        self.global_data_indices = []
-        count_dict = dict()
-        for ind, x in enumerate(self.train_dataset):
-            _, label = x
-
-            if self.params["semantic"] and (ind in self.params["poison_images"] or ind in self.params["poison_images_test"]):
-                continue
-
-            if count_dict.get(label, False):
-                if count_dict[label] <= class_num:
-                    self.global_data_indices.append(ind)
-                    count_dict[label] += 1
-                else:
-                    continue
-            elif len(self.global_data_indices) == class_num*10:
-                break
-            else:
-                count_dict[label] = 1
         return True
 
     def _sample_dirichlet_train_data(self, no_participants, alpha=0.9):
@@ -112,14 +87,10 @@ class WMFLDataloader(AbstractDataloader):
         """
 
         cifar_classes = {}
-        indices = [i for i in range(len(self.train_dataset))]
-        self._sample_global_data_indice()
-        # self.global_data_indices = indices[-self.params["global_dataset_size"]:-1]
+
         for ind, x in enumerate(self.train_dataset):
             _, label = x
             if self.params["semantic"] and (ind in self.params['poison_images'] or ind in self.params['poison_images_test']):
-                continue
-            if ind in self.global_data_indices:
                 continue
             
             if label in cifar_classes:
@@ -209,32 +180,12 @@ class WMFLDataloader(AbstractDataloader):
             ood_data_label.append(assigned_label)
         return ood_data, ood_data_label
 
-    def _ood_label_distrib(self, indices):
-        distrib_dict=dict()
-        no_class = 100
-        for label in range(no_class):
-            distrib_dict[label]=0
-        
-        sum_no = 0
-        for indice in indices:
-            _, label = self.ood_dataset[indice]
-            if not distrib_dict.get(label, False):
-                distrib_dict[label] = 1
-            else:
-                distrib_dict[label] += 1
-            sum_no+=1
-        percentage_dict=dict()
-        for key,value in distrib_dict.items():
-            percentage_dict[key] = round(value/sum_no, 2)
-        return distrib_dict, percentage_dict, sum_no
-
     def _get_ood_dataloader(self):
         r'''
         sample limited ood data as open set noise
         '''
         indices = random.sample(range(len(self.ood_dataset)), self.params["ood_data_sample_lens"])
-        _, _, sum_no = self._ood_label_distrib(indices)
-        print(f"class distribution for ood data, total no:{sum_no}")
+
         ood_dataloader =  torch.utils.data.DataLoader(self.ood_dataset,
                                            batch_size=self.params["ood_data_batch_size"],
                                            sampler=torch.utils.data.sampler.SubsetRandomSampler(indices),
@@ -253,9 +204,6 @@ class WMFLDataloader(AbstractDataloader):
                 ood_datalist[batch_id][0] = ood_datalist[batch_id][0].repeat(1,3,1,1)
 
             for ind in range(len(targets)):
-                # targets[ind] = random.randint(0,9)
-                # data[ind] = 0.8 * data[ind] + 0.2 *
-                # (torch.randn(data[ind].shape)-0.5)
                 targets[ind] = assigned_labels[batch_id][ind]
         ood_dataloader=iter(ood_datalist)
         return ood_dataloader
@@ -278,16 +226,7 @@ class WMFLDataloader(AbstractDataloader):
             
         self.test_data = self._get_test()
 
-        if self.params["resumed_model"]:
-            loaded_params = torch.load(f"saved_models/{self.params['resumed_model']}")
-        #     if "ood_dataloader" in loaded_params.keys():
-        #         self.ood_data = loaded_params["ood_dataloader"]
-        #     else:
-        #         self.ood_data = self._get_ood_dataloader()
-        # else:
-        
         self.ood_data = self._get_ood_dataloader()
-        self.global_data = self._get_global_dataloader()
         self.poison_data = self._get_poison_train()
 
         self.edge_poison_train, self.edge_poison_test = self._load_edge_case()

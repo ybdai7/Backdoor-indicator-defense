@@ -1,14 +1,8 @@
 ### General Setting
-resumed_model: Dec.18_21.54.38/saved_model_global_model_1200.pt.tar
-# resumed_model: False
-
-# save_on_round: [400, 500, 600, 800, 1000, 1200, 1500, 1800]
-save_on_round: [10000]
+resumed_model: False
+save_on_round: [400, 800, 1200]
 
 ### watermark setting
-noise_rate: 0.5
-noise_pattern: 1
-noise_label_fixed: True
 ood_data_sample_lens: 800
 ood_data_batch_size: 64
 
@@ -26,8 +20,6 @@ benign_retrain_no_times: 2 #7
 ### Malicious Client Setting
 # Optimizer Setting
 poisoned_lr: 0.025 #0.1 400, 0.05 800, 0.02 100
-# poisoned_lr: 0.05 #0.1 400, 0.05 800, 0.02 100
-# poisoned_lr: 0.04 #0.1 400, 0.05 800, 0.02 100
 poisoned_momentum: 0.9
 poisoned_weight_decay: 0.0005
 
@@ -35,23 +27,17 @@ poisoned_weight_decay: 0.0005
 poisoned_is_projection_grad: False
 poisoned_projection_norm: 5
 poisoned_retrain_no_times: 10
-# poisoned_start_round: 410
-# poisoned_start_round: 810
 poisoned_start_round: 1210
-# poisoned_start_round: 11210
 poisoned_end_round: 13000
 poisoned_round_interval: 1
 
 # Poisoned Task Setting
 poison_task_name: "pixel pattern"
 
-# semantic: True
-# pixel_pattern: False
 
 edge_case: False
-# edge_case: True
-
 semantic: False
+
 pixel_pattern: True
 
 # car with stripe bg 14
@@ -87,9 +73,6 @@ defense_method: Indicator
 malicious_train_algo: dba
 Fedprox_mu: 0 #0.5
 watermarking_mu: 0.1 #100
-watermarking_cs: 0 #0.04
-ood_noise_percent: 0.2
-ood_noise_scale: 1.5
 model_type: ResNet18
 dataset: CIFAR10
 class_num: 10
@@ -124,9 +107,7 @@ global_class_num: 20
 global_retrain_no_times: 200 #100
 
 # global optimizer setting
-global_lr_add_by: 0.001 #0.00008
-global_lr_init: 0.0005 #0.001
-global_lr_max: 0.0005 #0.001
+global_lr: 0.0005 #0.001
 global_momentum: 0.9 #0.9
 global_weight_decay: 0.0005
 global_is_projection_grad: False
@@ -168,14 +149,6 @@ malicious_aggregate_all_layer: 1
 show_local_test_log: False
 show_train_log: False
 
-aggregate_all_layer: 1
-partial_watermarking_ratio: 1 #0.99 [0.1, 0.5]
-
-regulation_method: l2_norm+neurotoxin
-# regulation_method: ewc
-ewc_lambda: 0
-
 ### VWM detection setting
-VWM_detection_threshold_initial: 95
-VWM_detection_threshold_min: 95
-VWM_detection_threshold_minus_on: 0
+VWM_detection_threshold: 95
+replace_original_bn: True
