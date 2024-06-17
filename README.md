@@ -38,7 +38,7 @@ want to check `global_watermarking_start_round` and `poisoned_start_round`, as
 these two parameters determine the round where BackdoorIndicator begins and the
 poisoning begins. Then you run the code
 
-    python main.py --GPU_id "x" --params utils/yaml/params_vanilla_Indicator.yaml
+    python main.py --GPU_id "x" --params utils/yamls/indicator/params_vanilla_Indicator.yaml
 
 The results are recorded in the corresponding `saved_models` folder.
 
