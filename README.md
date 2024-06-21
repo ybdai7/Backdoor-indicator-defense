@@ -15,6 +15,9 @@ For the version of important packages:
     torch==1.13.0
     torchvision==0.14.0
 
+For the edge-case datasets, you can acquire them following the instructions of https://github.com/ksreenivasan/OOD_Federated_Learning, 
+which is the official repo of the Yes-you-can-really-backdoor-FL paper.
+
 # First Run
 The code trains an Federated Learning global model from scratch when you run the
 code for the first time. It is recommended that do not apply any defense
