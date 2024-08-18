@@ -2,7 +2,7 @@
 
 Official code implementation of **BackdoorIndicator: Leveraging OOD Data for
 Proactive Backdoor Detection in Federated
-Learning**(https://arxiv.org/abs/2405.20862)
+Learning**(https://www.usenix.org/conference/usenixsecurity24/presentation/li-songze)
 
 # Initialization
 You first need to install relevant packages using:
