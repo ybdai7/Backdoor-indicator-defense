@@ -183,7 +183,7 @@ class MultikrumServer(AbstractServer):
 
         return candidate_indices
 
-    def broadcast_upload(self, round, local_benign_client, local_malicious_client, train_dataloader, test_dataloader, global_dataloader, poison_train_dataloader):
+    def broadcast_upload(self, round, local_benign_client, local_malicious_client, train_dataloader, test_dataloader, poison_train_dataloader):
 
         r"""
         Server broadcasts the global model to all participants.
@@ -247,7 +247,6 @@ class MultikrumServer(AbstractServer):
                                  train_data = client_train_data, 
                                  target_params_variables = target_params_variables,
                                  test_data = test_dataloader,
-                                 global_data = global_dataloader,
                                  is_log_train = self.params["show_train_log"],
                                  poisoned_pattern_choose = self.params["poisoned_pattern_choose"],
                                  round=round, model_id=model_id
