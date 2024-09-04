@@ -2,7 +2,7 @@
 
 Official code implementation of **BackdoorIndicator: Leveraging OOD Data for
 Proactive Backdoor Detection in Federated
-Learning**(https://arxiv.org/abs/2405.20862)
+Learning**(https://www.usenix.org/conference/usenixsecurity24/presentation/li-songze)
 
 # Initialization
 You first need to install relevant packages using:
@@ -14,6 +14,9 @@ For the version of important packages:
     Python==3.7.15
     torch==1.13.0
     torchvision==0.14.0
+
+For the edge-case datasets, you can acquire them following the instructions of https://github.com/ksreenivasan/OOD_Federated_Learning, 
+which is the official repo of the Yes-you-can-really-backdoor-FL paper.
 
 # First Run
 The code trains an Federated Learning global model from scratch when you run the
@@ -38,7 +41,7 @@ want to check `global_watermarking_start_round` and `poisoned_start_round`, as
 these two parameters determine the round where BackdoorIndicator begins and the
 poisoning begins. Then you run the code
 
-    python main.py --GPU_id "x" --params utils/yaml/params_vanilla_Indicator.yaml
+    python main.py --GPU_id "x" --params utils/yamls/indicator/params_vanilla_Indicator.yaml
 
 The results are recorded in the corresponding `saved_models` folder.
 
