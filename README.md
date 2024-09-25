@@ -58,14 +58,18 @@ see their influence to the proposed method, as it is discussed in the paper:
 We appreciate it if you would please cite the following paper if you found the
 repository useful for your work:
 
-    @misc{li2024backdoorindicator,
-      title={BackdoorIndicator: Leveraging OOD Data for Proactive Backdoor Detection in Federated Learning}, 
-      author={Songze Li and Yanbo Dai},
-      year={2024},
-      eprint={2405.20862},
-      archivePrefix={arXiv},
-      primaryClass={cs.CR}
-    }
+    @inproceedings {299824,
+        author = {Songze Li and Yanbo Dai},
+        title = {{BackdoorIndicator}: Leveraging {OOD} Data for Proactive Backdoor Detection in Federated Learning},
+        booktitle = {33rd USENIX Security Symposium (USENIX Security 24)},
+        year = {2024},
+        isbn = {978-1-939133-44-1},
+        address = {Philadelphia, PA},
+        pages = {4193--4210},
+        url = {https://www.usenix.org/conference/usenixsecurity24/presentation/li-songze},
+        publisher = {USENIX Association},
+        month = aug
+        }
 
 
 
